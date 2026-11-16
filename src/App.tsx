@@ -291,6 +291,7 @@ export default function App() {
               isDailyMission={activeSession.isDailyMission}
               answeredTodayIds={answeredTodayIds}
               timeLimitSeconds={activeSession.timeLimitSeconds}
+              currentXp={xp}
               muted={muted}
               onToggleMute={() => setMuted((m) => !m)}
               onExit={() => setActiveSession(null)}

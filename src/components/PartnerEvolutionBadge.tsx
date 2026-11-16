@@ -1,127 +1,150 @@
 import { ChevronRight, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 
-export const OWL_COACH_IMAGE_URL = '/src/assets/images/ai_owl_coach_1794818548872.jpg';
+export const GAME_IMAGE_ASSETS = {
+  shiba: '/src/assets/images/partner_lv1_shiba_1794840173479.jpg',
+  fox: '/src/assets/images/partner_lv2_fox_1794840175680.jpg',
+  falcon: '/src/assets/images/partner_lv3_falcon_1794840174788.jpg',
+  owl: '/src/assets/images/ai_owl_coach_1794818548872.jpg',
+  heroBanner: '/src/assets/images/hero_arena_banner_1794840175184.jpg',
+  bossGuardian: '/src/assets/images/boss_grammar_guardian_1794840175827.jpg',
+  supplyCrate: '/src/assets/images/supply_drop_crate_1794840175462.jpg',
+} as const;
+
+export const OWL_COACH_IMAGE_URL = GAME_IMAGE_ASSETS.owl;
 
 export interface EvolutionStage {
-  id: string;
+  id: 'shiba' | 'fox' | 'falcon' | 'griffin' | 'owl';
   level: number;
   name: string;
   species: string;
   minXp: number;
   targetLabel: string;
+  imageUrl: string;
 }
 
 export const EVOLUTION_STAGES: EvolutionStage[] = [
-  { id: 'shiba', level: 1, name: '菜鳥實習生', species: '柴犬', minXp: 0, targetLabel: '500' },
-  { id: 'fox', level: 2, name: '商務菁英', species: '赤狐', minXp: 2500, targetLabel: '650' },
-  { id: 'falcon', level: 3, name: '實戰蒼鷹', species: '蒼鷹', minXp: 8000, targetLabel: '750' },
-  { id: 'griffin', level: 4, name: '黃金領航員', species: '金獅鷲', minXp: 18000, targetLabel: '800' },
-  { id: 'owl', level: 5, name: '金色貓頭鷹導師', species: '貓頭鷹', minXp: 32000, targetLabel: '800+' },
+  {
+    id: 'shiba',
+    level: 1,
+    name: '菜鳥實習生',
+    species: '柴犬',
+    minXp: 0,
+    targetLabel: '500',
+    imageUrl: GAME_IMAGE_ASSETS.shiba,
+  },
+  {
+    id: 'fox',
+    level: 2,
+    name: '商務菁英',
+    species: '赤狐',
+    minXp: 2500,
+    targetLabel: '650',
+    imageUrl: GAME_IMAGE_ASSETS.fox,
+  },
+  {
+    id: 'falcon',
+    level: 3,
+    name: '實戰蒼鷹',
+    species: '蒼鷹',
+    minXp: 8000,
+    targetLabel: '750',
+    imageUrl: GAME_IMAGE_ASSETS.falcon,
+  },
+  {
+    id: 'griffin',
+    level: 4,
+    name: '黃金領航員',
+    species: '金鷹',
+    minXp: 18000,
+    targetLabel: '800',
+    imageUrl: GAME_IMAGE_ASSETS.falcon,
+  },
+  {
+    id: 'owl',
+    level: 5,
+    name: '金色貓頭鷹導師',
+    species: '貓頭鷹',
+    minXp: 32000,
+    targetLabel: '800+',
+    imageUrl: GAME_IMAGE_ASSETS.owl,
+  },
 ];
 
-export function OwlCoachPortrait({
-  sizeClass = 'h-14 w-14',
+export function GameImageFrame({
+  src,
+  alt,
+  className = 'h-14 w-14',
+  fallbackLabel = 'AI',
 }: {
-  sizeClass?: string;
+  src: string;
+  alt: string;
+  className?: string;
+  fallbackLabel?: string;
 }) {
-  const [imgError, setImgError] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   return (
     <div
-      className={`relative shrink-0 overflow-hidden rounded-xl border border-[#2a3854] bg-[#0b0e14] ${sizeClass}`}
+      className={`relative shrink-0 overflow-hidden rounded-xl border border-[#2a3854] bg-[#0b0e14] ${className}`}
     >
-      {!imgError ? (
+      {!failed ? (
         <img
-          src={OWL_COACH_IMAGE_URL}
-          alt="AI 教練 3D 科技貓頭鷹插畫"
+          src={src}
+          alt={alt}
           referrerPolicy="no-referrer"
-          onError={() => setImgError(true)}
+          onError={() => setFailed(true)}
           className="h-full w-full object-cover"
         />
       ) : (
-        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#172554] to-[#0b0e14]">
-          <svg viewBox="0 0 64 64" className="h-10 w-10" aria-hidden="true">
-            <circle cx="32" cy="34" r="20" fill="#b47b44" />
-            <circle cx="24" cy="30" r="6" fill="#fff4e3" />
-            <circle cx="40" cy="30" r="6" fill="#fff4e3" />
-            <circle cx="24" cy="30" r="2.8" fill="#0f172a" />
-            <circle cx="40" cy="30" r="2.8" fill="#0f172a" />
-            <polygon points="32,34 29,39 35,39" fill="#f59e0b" />
-          </svg>
+        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#172554] to-[#0b0e14] font-mono text-xs font-bold text-[#60a5fa]">
+          {fallbackLabel}
         </div>
       )}
     </div>
   );
 }
 
-export function StageAvatar({ stageId, size = 'md' }: { stageId: string; size?: 'sm' | 'md' }) {
-  const boxClass = size === 'sm' ? 'h-8 w-8' : 'h-11 w-11';
-  const svgClass = size === 'sm' ? 'h-6 w-6' : 'h-9 w-9';
+export function OwlCoachPortrait({
+  sizeClass = 'h-14 w-14',
+}: {
+  sizeClass?: string;
+}) {
+  return (
+    <GameImageFrame
+      src={GAME_IMAGE_ASSETS.owl}
+      alt="AI 教練 3D 科技貓頭鷹插畫"
+      className={sizeClass}
+      fallbackLabel="OWL"
+    />
+  );
+}
 
-  if (stageId === 'owl') {
-    return <OwlCoachPortrait sizeClass={boxClass} />;
-  }
-
-  if (stageId === 'griffin') {
-    return (
-      <div className={`flex ${boxClass} shrink-0 items-center justify-center rounded-xl border border-[#f59e0b]/45 bg-[#0e131d]`}>
-        <svg viewBox="0 0 48 48" className={svgClass} aria-hidden="true">
-          <path d="M12 16 L17 7 L23 15 Z" fill="#fbbf24" />
-          <path d="M36 16 L31 7 L25 15 Z" fill="#fbbf24" />
-          <circle cx="24" cy="25" r="12" fill="#f59e0b" />
-          <circle cx="24" cy="27" r="8" fill="#fef3c7" />
-          <circle cx="20" cy="23" r="2" fill="#0f172a" />
-          <circle cx="28" cy="23" r="2" fill="#0f172a" />
-          <polygon points="24,25 21,30 27,30" fill="#d97706" />
-        </svg>
-      </div>
-    );
-  }
-
-  if (stageId === 'falcon') {
-    return (
-      <div className={`flex ${boxClass} shrink-0 items-center justify-center rounded-xl border border-[#10b981]/45 bg-[#0e131d]`}>
-        <svg viewBox="0 0 48 48" className={svgClass} aria-hidden="true">
-          <path d="M10 21 C10 13, 38 13, 38 21 L34 35 C30 39, 18 39, 14 35 Z" fill="#334155" />
-          <path d="M15 24 C15 19, 33 19, 33 24 L30 34 C26 37, 22 37, 18 34 Z" fill="#e2e8f0" />
-          <circle cx="20" cy="23" r="2" fill="#0f172a" />
-          <circle cx="28" cy="23" r="2" fill="#0f172a" />
-          <polygon points="24,25 21.5,30.5 26.5,30.5" fill="#f59e0b" />
-        </svg>
-      </div>
-    );
-  }
-
-  if (stageId === 'fox') {
-    return (
-      <div className={`flex ${boxClass} shrink-0 items-center justify-center rounded-xl border border-[#3b82f6]/45 bg-[#0e131d]`}>
-        <svg viewBox="0 0 48 48" className={svgClass} aria-hidden="true">
-          <path d="M10 18 L14 6 L22 15 Z" fill="#ea580c" />
-          <path d="M38 18 L34 6 L26 15 Z" fill="#ea580c" />
-          <path d="M12 18 C12 12, 36 12, 36 18 C36 29, 28 36, 24 37 C20 36, 12 29, 12 18 Z" fill="#f97316" />
-          <path d="M13 24 C16 24, 21 28, 24 36 C27 28, 32 24, 35 24 C34 31, 28 36, 24 37 C20 36, 14 31, 13 24 Z" fill="#fff7ed" />
-          <circle cx="19" cy="22" r="2" fill="#0f172a" />
-          <circle cx="29" cy="22" r="2" fill="#0f172a" />
-          <circle cx="24" cy="32" r="2.2" fill="#0f172a" />
-          <path d="M15 38 L24 41 L33 38" stroke="#3b82f6" strokeWidth="2.4" strokeLinecap="round" fill="none" />
-        </svg>
-      </div>
-    );
-  }
+export function StageAvatar({
+  stageId,
+  size = 'md',
+}: {
+  stageId: string;
+  size?: 'sm' | 'md' | 'lg';
+}) {
+  const stage =
+    EVOLUTION_STAGES.find((s) => s.id === stageId) ?? EVOLUTION_STAGES[0];
+  const boxClass =
+    size === 'lg'
+      ? 'h-16 w-16'
+      : size === 'sm'
+        ? 'h-8 w-8 rounded-lg'
+        : 'h-11 w-11';
 
   return (
-    <div className={`flex ${boxClass} shrink-0 items-center justify-center rounded-xl border border-[#263044] bg-[#0e131d]`}>
-      <svg viewBox="0 0 48 48" className={svgClass} aria-hidden="true">
-        <path d="M11 19 L10 8 L19 15 Z" fill="#d97724" />
-        <path d="M37 19 L38 8 L29 15 Z" fill="#d97724" />
-        <path d="M11 22 C11 13, 37 13, 37 22 C37 32, 30 37, 24 37 C18 37, 11 32, 11 22 Z" fill="#f5a64b" />
-        <path d="M13 25 C15 22, 21 22, 24 25 C27 22, 33 22, 35 25 C35 32, 29 37, 24 37 C19 37, 13 32, 13 25 Z" fill="#fff4e3" />
-        <circle cx="19" cy="23" r="1.9" fill="#0f172a" />
-        <circle cx="29" cy="23" r="1.9" fill="#0f172a" />
-        <ellipse cx="24" cy="28" rx="2.3" ry="1.6" fill="#1e293b" />
-      </svg>
-    </div>
+    <GameImageFrame
+      src={stage.imageUrl}
+      alt={`${stage.name} ${stage.species} 3D 角色立繪`}
+      className={`${boxClass} ${
+        stageId === 'griffin' ? 'border-[#f59e0b]/60 ring-1 ring-[#f59e0b]/30' : ''
+      }`}
+      fallbackLabel={stage.species}
+    />
   );
 }
 
@@ -179,9 +202,7 @@ export function PartnerEvolutionBadge({
               />
             </div>
             <span className="shrink-0 font-mono text-[10px] text-[#60a5fa] tabular-nums">
-              {nextStage
-                ? `差 ${xpRemaining.toLocaleString()} XP`
-                : '最終形態'}
+              {nextStage ? `差 ${xpRemaining.toLocaleString()} XP` : '最終形態'}
             </span>
           </div>
         </div>
@@ -192,7 +213,7 @@ export function PartnerEvolutionBadge({
           <div className="flex items-center justify-between text-[11px] text-[#8b98b1]">
             <span className="inline-flex items-center gap-1 font-medium text-[#fbbf24]">
               <Sparkles className="h-3 w-3" />
-              5 階段夥伴進化路線（全年 32,000 XP）
+              5 階段 3D 夥伴進化路線
             </span>
             <span className="font-mono tabular-nums">{currentXp.toLocaleString()} XP</span>
           </div>
@@ -208,11 +229,11 @@ export function PartnerEvolutionBadge({
                       ? 'border-[#3b82f6]/70 bg-[#151c2c]'
                       : unlocked
                         ? 'border-[#1e2636] bg-[#111622]'
-                        : 'border-[#1e2636] bg-[#0e131d] opacity-55'
+                        : 'border-[#1e2636] bg-[#0e131d] opacity-45 grayscale'
                   }`}
                 >
                   <StageAvatar stageId={stage.id} size="sm" />
-                  <span className="mt-1 truncate w-full text-[10px] font-semibold text-white">
+                  <span className="mt-1 w-full truncate text-[10px] font-semibold text-white">
                     {stage.species}
                   </span>
                   <span className="font-mono text-[9px] text-[#8b98b1] tabular-nums">

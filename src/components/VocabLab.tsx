@@ -287,46 +287,56 @@ export function VocabLab({
             onKeyDown={(e) => {
               if (e.key === 'Enter') setFlipped((f) => !f);
             }}
-            className="mt-6 flex min-h-[220px] cursor-pointer flex-col items-center justify-center rounded-xl border border-[#222b3e] bg-[#0e131d] p-6 text-center transition-colors hover:border-[#3b82f6]/40"
+            className="perspective-1000 mt-6 cursor-pointer"
           >
-            <div className="flex items-center gap-3">
-              <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                {currentCard.word}
-              </h2>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlePlayWord(currentCard.word);
-                }}
-                aria-label="播放單字發音"
-                className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#263044] bg-[#171d2c] text-[#60a5fa] hover:bg-[#1f283d] active:scale-95"
-              >
-                <Volume2 className="h-4 w-4" />
-              </button>
-            </div>
-            <p className="mt-2 font-mono text-xs text-[#8b98b1]">
-              {currentCard.phonetic}
-            </p>
+            <div
+              className={`transform-style-3d relative min-h-[240px] w-full transition-transform duration-500 ${
+                flipped ? 'rotate-y-180' : ''
+              }`}
+            >
+              {/* Front Face */}
+              <div className="backface-hidden absolute inset-0 flex flex-col items-center justify-center rounded-xl border border-[#222b3e] bg-[#0e131d] p-6 text-center transition-colors hover:border-[#3b82f6]/50">
+                <div className="flex items-center gap-3">
+                  <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                    {currentCard.word}
+                  </h2>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePlayWord(currentCard.word);
+                    }}
+                    aria-label="播放單字發音"
+                    className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#263044] bg-[#171d2c] text-[#60a5fa] hover:bg-[#1f283d] active:scale-95"
+                  >
+                    <Volume2 className="h-4 w-4" />
+                  </button>
+                </div>
+                <p className="mt-2 font-mono text-xs text-[#8b98b1]">
+                  {currentCard.phonetic}
+                </p>
+                <p className="mt-7 inline-flex items-center gap-1.5 text-xs text-[#64748b]">
+                  <RotateCw className="h-3.5 w-3.5" />
+                  點擊卡片或按 Space 3D 翻面查看釋義
+                </p>
+              </div>
 
-            {flipped ? (
-              <div className="animate-modal-pop mt-6 max-w-lg border-t border-[#1e2636] pt-5">
-                <p className="text-lg font-semibold text-[#10b981]">
+              {/* Back Face */}
+              <div className="backface-hidden rotate-y-180 absolute inset-0 flex flex-col items-center justify-center rounded-xl border border-[#3b82f6]/45 bg-[#121827] p-6 text-center">
+                <span className="font-mono text-xs text-[#60a5fa]">
+                  {currentCard.word} · {currentCard.partOfSpeech}
+                </span>
+                <p className="mt-2 text-xl font-bold text-[#10b981]">
                   {currentCard.meaning}
                 </p>
-                <p className="mt-2.5 text-sm text-[#e6edf7]">
+                <p className="mt-3 max-w-lg text-sm leading-relaxed text-[#e6edf7]">
                   {currentCard.exampleEn}
                 </p>
-                <p className="mt-1 text-xs text-[#8b98b1]">
+                <p className="mt-1.5 text-xs text-[#8b98b1]">
                   {currentCard.exampleZh}
                 </p>
               </div>
-            ) : (
-              <p className="mt-8 inline-flex items-center gap-1.5 text-xs text-[#64748b]">
-                <RotateCw className="h-3.5 w-3.5" />
-                點擊卡片或按 Space 翻面查看釋義與例句
-              </p>
-            )}
+            </div>
           </div>
 
           <div className="mt-6 grid grid-cols-2 gap-3">

@@ -8,6 +8,7 @@ import {
   Heart,
   Lightbulb,
   ShieldAlert,
+  Swords,
   Volume2,
   VolumeX,
   XCircle,
@@ -20,9 +21,16 @@ import {
   speakEnglish,
   stopSpeaking,
 } from '../utils/soundAndSpeech';
+import {
+  EVOLUTION_STAGES,
+  GAME_IMAGE_ASSETS,
+  GameImageFrame,
+  StageAvatar,
+} from './PartnerEvolutionBadge';
 
 export interface PracticeRunnerProps {
   title: string;
+  currentXp?: number;
   questions: ToeicQuestion[];
   isDailyMission: boolean;
   answeredTodayIds: string[];
@@ -36,6 +44,7 @@ export interface PracticeRunnerProps {
 
 export function PracticeRunner({
   title,
+  currentXp = 6820,
   questions,
   isDailyMission,
   answeredTodayIds,
@@ -53,14 +62,15 @@ export function PracticeRunner({
   const [playbackRate, setPlaybackRate] = useState<PlaybackRate>(1.0);
   const [reportedIds, setReportedIds] = useState<string[]>([]);
 
-  // Battle Arena Game States
+  // Battle Arena Visual States
   const [combo, setCombo] = useState(0);
   const [peakCombo, setPeakCombo] = useState(0);
   const [shields, setShields] = useState(3);
   const [bossHpRemaining, setBossHpRemaining] = useState(questions.length);
-  const [bossShaking, setBossShaking] = useState(false);
+  const [attackKey, setAttackKey] = useState(0);
+  const [isAttacking, setIsAttacking] = useState(false);
 
-  // Exact 1-Year XP Accumulators (+5 / +2 / +1 / +0 duplicate)
+  // Exact 1-Year XP Accumulators
   const [correctCount, setCorrectCount] = useState(0);
   const [independentCorrectCount, setIndependentCorrectCount] = useState(0);
   const [hintedCorrectCount, setHintedCorrectCount] = useState(0);
@@ -74,6 +84,11 @@ export function PracticeRunner({
 
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
+
+  const activeStage = EVOLUTION_STAGES.reduce(
+    (acc, stage) => (currentXp >= stage.minXp ? stage : acc),
+    EVOLUTION_STAGES[0]
+  );
 
   const currentQuestion = questions[currentIndex];
   const isAnswered = selectedIndex !== null;
@@ -128,8 +143,9 @@ export function PracticeRunner({
         setPeakCombo((p) => Math.max(p, nextCombo));
         setCorrectCount((c) => c + 1);
         setBossHpRemaining((hp) => Math.max(0, hp - 1));
-        setBossShaking(true);
-        setTimeout(() => setBossShaking(false), 340);
+        setAttackKey((k) => k + 1);
+        setIsAttacking(true);
+        setTimeout(() => setIsAttacking(false), 450);
 
         if (usedHint) {
           setHintedCorrectCount((h) => h + 1);
@@ -278,7 +294,6 @@ export function PracticeRunner({
         </button>
 
         <div className="flex items-center gap-3 text-xs">
-          {/* Combo / Fever Status */}
           <div className="relative flex items-center">
             <div
               className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-mono font-semibold tabular-nums transition-all duration-200 ${
@@ -325,46 +340,82 @@ export function PracticeRunner({
         </div>
       </div>
 
-      {/* Battle Arena Stage Bar: Partner Shields vs. Stage Boss HP */}
+      {/* Visual Battle Arena: 3D Partner vs. 3D Boss Guardian + Energy Beam */}
       <div
-        className={`rounded-xl border bg-[#111622] px-4 py-3 transition-all duration-300 ${
+        className={`relative overflow-hidden rounded-2xl border bg-[#111622] px-4 py-3.5 transition-all duration-300 ${
           isFever
-            ? 'animate-fever-glow border-[#f59e0b]/60'
+            ? 'animate-fever-glow border-[#f59e0b]/70'
             : 'border-[#1e2636]'
         }`}
       >
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          {/* Left: Partner Energy Hearts */}
-          <div className="flex items-center gap-2 text-xs">
-            <span className="font-medium text-[#cbd5e1]">夥伴護盾</span>
-            <div className="flex items-center gap-1">
-              {[0, 1, 2].map((idx) => (
-                <Heart
-                  key={idx}
-                  className={`h-4 w-4 transition-all duration-200 ${
-                    idx < shields
-                      ? 'fill-[#3b82f6] text-[#60a5fa]'
-                      : 'text-[#2a344a]'
-                  }`}
-                />
-              ))}
+        <div className="relative flex items-center justify-between gap-3">
+          {/* Left Fighter: 3D Partner + Shields */}
+          <div className="flex items-center gap-3">
+            <div className={isAttacking ? 'animate-shiba-jump' : ''}>
+              <StageAvatar stageId={activeStage.id} size="md" />
+            </div>
+            <div>
+              <div className="text-xs font-semibold text-white">
+                {activeStage.name}
+              </div>
+              <div className="mt-1 flex items-center gap-1">
+                {[0, 1, 2].map((idx) => (
+                  <Heart
+                    key={idx}
+                    className={`h-3.5 w-3.5 transition-all duration-200 ${
+                      idx < shields
+                        ? 'fill-[#3b82f6] text-[#60a5fa]'
+                        : 'text-[#2a344a]'
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Center / Right: Stage Boss HP */}
-          <div className={`flex flex-1 items-center justify-end gap-3 ${bossShaking ? 'animate-boss-shake' : ''}`}>
-            <span className="text-xs font-medium text-[#94a3b8] whitespace-nowrap">
-              關卡目標 · {title}
-            </span>
-            <div className="h-2.5 w-28 overflow-hidden rounded-full bg-[#1b2233] sm:w-40">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-[#f43f5e] to-[#f59e0b] transition-all duration-300"
-                style={{ width: `${bossHpPct}%` }}
+          {/* Center Clash Zone + Animated Energy Beam */}
+          <div className="relative flex flex-1 flex-col items-center justify-center px-2">
+            <div className="flex items-center gap-1.5 font-mono text-[11px] font-semibold text-[#94a3b8]">
+              <Swords className={`h-3.5 w-3.5 ${isFever ? 'text-[#fbbf24]' : 'text-[#60a5fa]'}`} />
+              <span>{isFever ? 'FEVER 連擊加成' : title}</span>
+            </div>
+
+            <div className="relative mt-1.5 h-2 w-full overflow-hidden rounded-full bg-[#0b0e14]">
+              {isAttacking && (
+                <div
+                  key={attackKey}
+                  className={`animate-beam-shoot absolute inset-y-0 left-0 right-0 rounded-full ${
+                    isFever
+                      ? 'bg-gradient-to-r from-[#3b82f6] via-[#fbbf24] to-white'
+                      : 'bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-white'
+                  }`}
+                />
+              )}
+            </div>
+          </div>
+
+          {/* Right Opponent: 3D Boss Guardian + HP Bar */}
+          <div className="flex items-center gap-3">
+            <div className="text-right">
+              <div className="font-mono text-xs font-semibold text-[#fbbf24] tabular-nums">
+                BOSS {bossHpRemaining}/{questions.length}
+              </div>
+              <div className="mt-1.5 h-2 w-20 overflow-hidden rounded-full bg-[#1b2233] sm:w-28">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-[#f43f5e] to-[#f59e0b] transition-all duration-300"
+                  style={{ width: `${bossHpPct}%` }}
+                />
+              </div>
+            </div>
+
+            <div className={isAttacking ? 'animate-boss-hit' : ''}>
+              <GameImageFrame
+                src={GAME_IMAGE_ASSETS.bossGuardian}
+                alt="TOEIC 關卡守門衛士 Boss"
+                className="h-12 w-12 border-[#f43f5e]/50"
+                fallbackLabel="BOSS"
               />
             </div>
-            <span className="font-mono text-xs font-semibold text-[#fbbf24] tabular-nums">
-              {bossHpRemaining}/{questions.length}
-            </span>
           </div>
         </div>
       </div>
@@ -380,9 +431,8 @@ export function PracticeRunner({
         </span>
       </div>
 
-      {/* Main Question Card — Reading Area Stays Pure & Distraction-Free */}
+      {/* Main Question Card — Reading Zone Remains Clean & Legible */}
       <div className="mt-2.5 rounded-2xl border border-[#1e2636] bg-[#111622] p-5 sm:p-7">
-        {/* Reading Passage (No effects inside reading zone) */}
         {currentQuestion.passage && (
           <div className="mb-5 border-b border-[#1e2636] pb-5">
             {currentQuestion.passageHeader && (
@@ -396,7 +446,6 @@ export function PracticeRunner({
           </div>
         )}
 
-        {/* Audio Player + 0.9x / 1.0x / 1.15x Speed Switcher */}
         {currentQuestion.audioScript && (
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#222c40] bg-[#0e131d] px-4 py-3">
             <div className="flex items-center gap-3">
@@ -413,7 +462,6 @@ export function PracticeRunner({
               </span>
             </div>
 
-            {/* Playback Speed Toggle (0.9x / 1.0x / 1.15x) */}
             <div className="flex items-center gap-1 rounded-lg border border-[#263044] bg-[#111622] p-0.5">
               {([0.9, 1.0, 1.15] as PlaybackRate[]).map((rate) => (
                 <button
@@ -433,12 +481,10 @@ export function PracticeRunner({
           </div>
         )}
 
-        {/* Question Prompt */}
         <h3 className="text-base font-medium leading-relaxed text-white sm:text-lg">
           {currentQuestion.prompt}
         </h3>
 
-        {/* Hint Trigger (+2 XP instead of +5 XP) */}
         {!isAnswered && (
           <div className="mt-3">
             {!usedHint ? (
@@ -459,7 +505,6 @@ export function PracticeRunner({
           </div>
         )}
 
-        {/* 1-4 Ergonomic Options */}
         <div className="mt-5 space-y-2.5">
           {currentQuestion.options?.map((opt, idx) => {
             const isSelected = selectedIndex === idx;
@@ -511,11 +556,8 @@ export function PracticeRunner({
           })}
         </div>
 
-        {/* Footer Utility: Question Issue Report */}
         <div className="mt-4 flex items-center justify-between border-t border-[#1e2636]/70 pt-3 text-xs">
-          <span className="text-[#64748b]">
-            考點：{currentQuestion.weaknessTag}
-          </span>
+          <span className="text-[#64748b]">考點：{currentQuestion.weaknessTag}</span>
           <button
             type="button"
             disabled={isReported}
@@ -534,7 +576,6 @@ export function PracticeRunner({
           </button>
         </div>
 
-        {/* Post-Answer Explanation & Listening Transcript */}
         {isAnswered && (
           <div className="animate-modal-pop mt-5 border-t border-[#1e2636] pt-5">
             <div className="flex flex-wrap items-center justify-between gap-2 text-xs">

@@ -24,6 +24,24 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* 3D Flip Card Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
 /* Custom dark scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
@@ -43,7 +61,7 @@
   background: #33405c;
 }
 
-/* Pure CSS Game Animations (Zero framer-motion dependency) */
+/* Pure CSS Game Animations */
 @keyframes shiba-breathe {
   0%, 100% {
     transform: translateY(0) scaleY(1);
@@ -87,50 +105,76 @@
   }
   20% {
     opacity: 1;
-    transform: translateY(-4px) scale(1.05);
+    transform: translateY(-4px) scale(1.08);
   }
   100% {
     opacity: 0;
-    transform: translateY(-20px) scale(1);
+    transform: translateY(-22px) scale(1);
   }
 }
 
 @keyframes fever-glow {
   0%, 100% {
-    box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.35), 0 0 18px -4px rgba(245, 158, 11, 0.25);
+    box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.45), 0 0 22px -4px rgba(245, 158, 11, 0.35);
   }
   50% {
-    box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.65), 0 0 26px -2px rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.8), 0 0 32px -2px rgba(245, 158, 11, 0.5);
   }
 }
 
-@keyframes boss-shake {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-4px);
-  }
-  50% {
-    transform: translateX(4px);
-  }
-  75% {
-    transform: translateX(-2px);
-  }
-}
-
-@keyframes confetti-burst {
+@keyframes boss-hit {
   0% {
-    opacity: 1;
-    transform: translate(0, 0) scale(0.3) rotate(0deg);
+    transform: translateX(0) scale(1);
+    filter: brightness(1);
+  }
+  20% {
+    transform: translateX(6px) scale(0.95);
+    filter: brightness(2.2) saturate(1.4);
   }
   45% {
+    transform: translateX(-5px) scale(1.02);
+    filter: brightness(1.4);
+  }
+  70% {
+    transform: translateX(3px) scale(0.98);
+    filter: brightness(1.1);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    filter: brightness(1);
+  }
+}
+
+@keyframes beam-shoot {
+  0% {
+    opacity: 0;
+    transform: translateX(-45%) scaleX(0.3);
+  }
+  25% {
     opacity: 1;
-    transform: translate(var(--tx), var(--ty)) scale(1.05) rotate(var(--rot));
+    transform: translateX(0%) scaleX(1.1);
   }
   100% {
     opacity: 0;
-    transform: translate(var(--tx), calc(var(--ty) + 42px)) scale(0.8) rotate(calc(var(--rot) * 1.6));
+    transform: translateX(55%) scaleX(0.5);
+  }
+}
+
+@keyframes crate-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes xp-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
   }
 }
 
@@ -172,15 +216,23 @@
 }
 
 .animate-fever-glow {
-  animation: fever-glow 1.8s ease-in-out infinite;
+  animation: fever-glow 1.6s ease-in-out infinite;
 }
 
-.animate-boss-shake {
-  animation: boss-shake 0.32s ease-out;
+.animate-boss-hit {
+  animation: boss-hit 0.42s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.animate-confetti-burst {
-  animation: confetti-burst 1.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.animate-beam-shoot {
+  animation: beam-shoot 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-crate-float {
+  animation: crate-float 2.6s ease-in-out infinite;
+}
+
+.animate-xp-shimmer {
+  animation: xp-shimmer 2.4s ease-in-out infinite;
 }
 
 .animate-modal-pop {
