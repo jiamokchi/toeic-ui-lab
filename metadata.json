@@ -1,0 +1,6 @@
+{
+  "name": "TOEIC 800 練習室",
+  "description": "個人化 TOEIC 800 衝刺儀表板與輕度遊戲化實戰練習系統，整合每日任務、單字測驗、連勝經驗值系統與弱項診斷。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
