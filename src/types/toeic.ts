@@ -1,5 +1,7 @@
 export type NavTab = 'overview' | 'mission' | 'vocab' | 'diagnostic';
 
+export type DiagnosticSubTab = 'coach' | 'review' | 'weekly';
+
 export type MissionTierId = '5m' | '15m' | '30m';
 
 export type QuestionCategory = 'vocab' | 'reading' | 'listening';
@@ -10,9 +12,20 @@ export type QuestionFormat =
   | 'listening-choice'
   | 'spelling';
 
+export type VocabQuizMode =
+  | 'flashcard'
+  | 'cloze'
+  | 'en-to-zh'
+  | 'zh-to-en'
+  | 'audio-choice'
+  | 'spelling';
+
+export type PlaybackRate = 0.9 | 1.0 | 1.15;
+
 export interface RankTier {
   id: string;
-  targetScore: number;
+  level: number;
+  targetLabel: string;
   title: string;
   subtitle: string;
   minXp: number;
@@ -30,7 +43,7 @@ export interface MissionTier {
     reading: number;
     listening: number;
   };
-  baseXp: number;
+  maxXp: number;
   recommended?: boolean;
 }
 
@@ -39,16 +52,14 @@ export interface ToeicQuestion {
   category: QuestionCategory;
   format: QuestionFormat;
   partLabel: string;
-  difficulty: 600 | 700 | 800;
+  difficulty: 500 | 650 | 750 | 800;
   passage?: string;
   passageHeader?: string;
   prompt: string;
+  hint: string;
   audioScript?: string;
   options?: string[];
   correctIndex?: number;
-  correctSpelling?: string;
-  phonetic?: string;
-  meaning?: string;
   explanation: string;
   weaknessTag: string;
 }
@@ -60,9 +71,12 @@ export interface VocabCard {
   partOfSpeech: string;
   meaning: string;
   exampleEn: string;
+  exampleCloze: string;
   exampleZh: string;
   level: 650 | 750 | 800;
   mastered: boolean;
+  zhDistractors: string[];
+  enDistractors: string[];
 }
 
 export interface DailyProgressDay {
@@ -70,6 +84,7 @@ export interface DailyProgressDay {
   date: string;
   xp: number;
   accuracy: number;
+  answered: number;
   minutes: number;
   completed: boolean;
 }
@@ -86,15 +101,36 @@ export interface WeaknessItem {
   categoryFilter: QuestionCategory;
 }
 
+export interface ReviewQueueItem {
+  id: string;
+  questionId: string;
+  partLabel: string;
+  weaknessTag: string;
+  promptPreview: string;
+  dueLabel: string;
+  wrongCount: number;
+}
+
 export interface SessionResult {
   missionTitle: string;
   totalAnswered: number;
   correctCount: number;
+  independentCorrectCount: number;
+  hintedCorrectCount: number;
   peakCombo: number;
-  baseXpEarned: number;
-  comboBonusXp: number;
-  completionBonusXp: number;
+  questionXpEarned: number;
+  masteryBonusXp: number;
+  fullAttendanceBonusXp: number;
   totalXpEarned: number;
   elapsedSeconds: number;
   isDailyMission: boolean;
+  supplyRewardLabel: string;
+}
+
+export interface ArcadeResult {
+  totalAnswered: number;
+  correctCount: number;
+  peakCombo: number;
+  score: number;
+  isNewBest: boolean;
 }

@@ -1,19 +1,19 @@
-import { Check, Crown, Flame, Shield, Trophy, Zap } from 'lucide-react';
+import { Check, Crown, Flame, MapPin, Trophy, Zap } from 'lucide-react';
 import { useState } from 'react';
 import { DailyProgressDay, RankTier } from '../types/toeic';
+import { EVOLUTION_STAGES, StageAvatar } from './PartnerEvolutionBadge';
 
 const STREAK_ACHIEVEMENTS = [
   { id: '3d', days: 3, label: '3 天火花', icon: Flame, reward: '連續 3 日養成起動節奏' },
-  { id: '7d', days: 7, label: '7 天閃電', icon: Zap, reward: '解鎖連勝凍結護盾 ×1' },
+  { id: '7d', days: 7, label: '7 天閃電', icon: Zap, reward: '達成單週滿勤專注節奏' },
   { id: '14d', days: 14, label: '14 天火炬', icon: Trophy, reward: '常駐雙週專注勳章' },
-  { id: '30d', days: 30, label: '30 天殿堂', icon: Crown, reward: '解鎖衝刺金框成就' },
+  { id: '30d', days: 30, label: '30 天殿堂', icon: Crown, reward: '解鎖月度全勤金框榮譽' },
 ];
 
-interface RankProgressTrackProps {
+export interface RankProgressTrackProps {
   currentXp: number;
-  estimatedScore: number;
+  maxCareerXp: number;
   streakDays: number;
-  freezeShields: number;
   rankTiers: RankTier[];
   weeklyData: DailyProgressDay[];
   todayCompleted: boolean;
@@ -22,15 +22,13 @@ interface RankProgressTrackProps {
 
 export function RankProgressTrack({
   currentXp,
-  estimatedScore,
+  maxCareerXp,
   streakDays,
-  freezeShields,
   rankTiers,
   weeklyData,
   todayCompleted,
   onOpenBlueprint,
 }: RankProgressTrackProps) {
-  const maxXp = rankTiers[rankTiers.length - 1].minXp; // 5000 XP -> TOEIC 800
   const currentRankIndex = rankTiers.reduce((acc, tier, idx) => {
     return currentXp >= tier.minXp ? idx : acc;
   }, 0);
@@ -40,37 +38,38 @@ export function RankProgressTrack({
 
   const [selectedTierId, setSelectedTierId] = useState<string>(currentRank.id);
   const [selectedBadgeId, setSelectedBadgeId] = useState<string>('14d');
+
   const inspectedTier =
     rankTiers.find((t) => t.id === selectedTierId) ?? currentRank;
   const inspectedBadge =
     STREAK_ACHIEVEMENTS.find((b) => b.id === selectedBadgeId) ??
     STREAK_ACHIEVEMENTS[0];
 
-  const progressPercent = Math.min(100, Math.round((currentXp / maxXp) * 100));
+  const progressPercent = Math.min(100, Math.round((currentXp / maxCareerXp) * 100));
   const xpToNext = nextRank ? Math.max(0, nextRank.minXp - currentXp) : 0;
 
   return (
     <section
-      aria-label="TOEIC 800 等級與連勝進度"
+      aria-label="TOEIC 800 冒險階梯與連勝進度"
       className="rounded-2xl border border-[#1e2636] bg-[#111622] p-5 sm:p-6"
     >
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-stretch">
-        {/* Left 8 cols: TOEIC 800 Ladder XP Progress */}
-        <div className="flex flex-col justify-between lg:col-span-8 lg:pr-6 lg:border-r lg:border-[#1e2636]">
+        {/* Left 8 cols: 5-Stage Adventure Map Ladder (500 -> 650 -> 750 -> 800 -> 800+) */}
+        <div className="flex flex-col justify-between lg:col-span-8 lg:border-r lg:border-[#1e2636] lg:pr-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <p className="text-xs font-medium text-[#8b98b1]">
-                目前目標階段 · {currentRank.targetScore} 分階級 · {currentRank.title}
+                目前冒險座標 · Lv.{currentRank.level}（{currentRank.targetLabel}）{currentRank.title}
               </p>
               <div className="mt-1.5 flex items-baseline gap-3">
                 <h1 className="font-display text-2xl font-bold tracking-tight text-white sm:text-3xl tabular-nums">
                   {currentXp.toLocaleString()}
                   <span className="ml-1.5 text-sm font-medium text-[#8b98b1]">
-                    / {maxXp.toLocaleString()} XP
+                    / {maxCareerXp.toLocaleString()} XP
                   </span>
                 </h1>
-                <span className="text-xs font-mono text-[#60a5fa] tabular-nums">
-                  預估實力 {estimatedScore} 分
+                <span className="font-mono text-xs text-[#10b981] tabular-nums">
+                  總進度 {progressPercent}%
                 </span>
               </div>
             </div>
@@ -78,13 +77,13 @@ export function RankProgressTrack({
             <button
               type="button"
               onClick={onOpenBlueprint}
-              className="shrink-0 whitespace-nowrap rounded-lg border border-[#263044] bg-[#171d2c] px-3 py-1.5 text-xs font-medium text-[#cbd5e1] transition-colors hover:border-[#3b82f6]/60 hover:text-white active:scale-[0.98]"
+              className="shrink-0 whitespace-nowrap rounded-lg border border-[#263044] bg-[#171d2c] px-3 py-1.5 text-xs font-medium text-[#cbd5e1] transition-all duration-150 hover:border-[#3b82f6]/60 hover:text-white active:scale-[0.96]"
             >
               查看遊戲機制藍圖
             </button>
           </div>
 
-          {/* Interactive Tier Track (500 -> 650 -> 750 -> 800) */}
+          {/* Adventure Route Track */}
           <div className="mt-6">
             <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-[#1b2233]">
               <div
@@ -93,87 +92,98 @@ export function RankProgressTrack({
               />
             </div>
 
-            {/* Interactive Milestone Nodes */}
-            <div className="mt-4 grid grid-cols-4 gap-2">
+            {/* 5 Connected Stage Nodes */}
+            <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-5">
               {rankTiers.map((tier, idx) => {
                 const isUnlocked = currentXp >= tier.minXp;
+                const isCurrentStage = idx === currentRankIndex;
                 const isSelected = inspectedTier.id === tier.id;
-                const isGoal = tier.targetScore === 800;
+                const isFinal = tier.level === 5;
+                const stageMeta = EVOLUTION_STAGES[idx];
 
                 return (
                   <button
                     key={tier.id}
                     type="button"
                     onClick={() => setSelectedTierId(tier.id)}
-                    className={`group flex min-h-[44px] flex-col items-start rounded-xl border px-2.5 py-2 text-left transition-all duration-150 active:scale-[0.98] sm:px-3 ${
+                    className={`group relative flex min-h-[56px] flex-col justify-between rounded-xl border px-2.5 py-2 text-left transition-all duration-150 active:scale-[0.97] ${
                       isSelected
                         ? 'border-[#3b82f6] bg-[#171d2c]'
-                        : 'border-[#1e2636] bg-[#0e131d] hover:border-[#2c3850]'
+                        : isCurrentStage
+                          ? 'border-[#3b82f6]/50 bg-[#141a29]'
+                          : 'border-[#1e2636] bg-[#0e131d] hover:border-[#2c3850]'
                     }`}
                   >
                     <div className="flex w-full items-center justify-between gap-1">
                       <span
-                        className={`font-mono text-xs font-semibold tabular-nums ${
-                          isGoal && isUnlocked
+                        className={`font-mono text-xs font-bold tabular-nums ${
+                          isFinal && isUnlocked
                             ? 'text-[#f59e0b]'
                             : isUnlocked
                               ? 'text-[#60a5fa]'
                               : 'text-[#64748b]'
                         }`}
                       >
-                        {tier.targetScore}
+                        Lv.{tier.level} · {tier.targetLabel}
                       </span>
-                      {isUnlocked ? (
+
+                      {isCurrentStage ? (
+                        <MapPin className="h-3.5 w-3.5 text-[#f59e0b]" />
+                      ) : isUnlocked ? (
                         <Check className="h-3.5 w-3.5 text-[#10b981]" />
-                      ) : isGoal ? (
-                        <Trophy className="h-3.5 w-3.5 text-[#f59e0b]/70" />
                       ) : (
                         <span className="font-mono text-[10px] text-[#64748b] tabular-nums">
-                          {idx === 0 ? '0' : `${tier.minXp}`}
+                          {tier.minXp >= 1000 ? `${tier.minXp / 1000}k` : tier.minXp}
                         </span>
                       )}
                     </div>
-                    <span
-                      className={`mt-0.5 truncate text-xs font-medium w-full ${
-                        isUnlocked ? 'text-[#e6edf7]' : 'text-[#8b98b1]'
-                      }`}
-                    >
-                      {tier.title}
-                    </span>
+
+                    <div className="mt-1.5 flex items-center gap-1.5">
+                      {isCurrentStage && stageMeta && (
+                        <StageAvatar stageId={stageMeta.id} size="sm" />
+                      )}
+                      <span
+                        className={`truncate text-[11px] font-medium ${
+                          isUnlocked ? 'text-[#e6edf7]' : 'text-[#8b98b1]'
+                        }`}
+                      >
+                        {tier.title}
+                      </span>
+                    </div>
                   </button>
                 );
               })}
             </div>
 
-            {/* Inspected Milestone Detail Strip (Unboxed clean line) */}
+            {/* Inspected Milestone Detail Line */}
             <div className="mt-3.5 flex flex-wrap items-center justify-between gap-2 text-xs text-[#8b98b1]">
               <p>
                 <span className="font-semibold text-[#e6edf7]">
-                  TOEIC {inspectedTier.targetScore} · {inspectedTier.title}：
+                  Lv.{inspectedTier.level}（{inspectedTier.targetLabel}）{inspectedTier.title}：
                 </span>
                 {inspectedTier.perk}
               </p>
               <span className="font-mono text-[#60a5fa] tabular-nums">
                 {nextRank
-                  ? `距離 ${nextRank.targetScore} 門檻還差 ${xpToNext.toLocaleString()} XP`
-                  : '已解鎖全部 800+ 等級稱號'}
+                  ? `距離 Lv.${nextRank.level}（${nextRank.targetLabel}）還差 ${xpToNext.toLocaleString()} XP`
+                  : '已抵達 32,000 XP 最終殿堂'}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Right 4 cols: Consecutive Days Streak & 7-Day Check-in */}
+        {/* Right 4 cols: Taipei UTC+8 Consecutive Days Streak & Achievement Badges */}
         <div className="flex flex-col justify-between lg:col-span-4">
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="text-xs font-medium text-[#8b98b1]">
-                連續專注連勝紀錄
+                連續專注天數 · 台北時區 (UTC+8)
               </p>
               <div className="mt-1.5 flex items-center gap-2.5">
                 <div
                   className={`flex h-10 w-10 items-center justify-center rounded-xl border ${
                     todayCompleted
-                      ? 'border-[#f59e0b]/40 bg-[#f59e0b]/15 text-[#f59e0b]'
+                      ? 'border-[#f59e0b]/45 bg-[#f59e0b]/15 text-[#f59e0b]'
                       : 'border-[#263044] bg-[#171d2c] text-[#f59e0b]'
                   }`}
                 >
@@ -184,20 +194,15 @@ export function RankProgressTrack({
                     {streakDays} 天
                   </div>
                   <p className="text-xs text-[#8b98b1]">
-                    {todayCompleted ? '今日已簽到延長連勝' : '完成今日任務即可 +1 天'}
+                    {todayCompleted ? '今日已簽到延長連勝' : '完成今日課表即可 +1 天'}
                   </p>
                 </div>
               </div>
             </div>
-
-            <div className="flex items-center gap-1.5 text-xs text-[#94a3b8]">
-              <Shield className="h-3.5 w-3.5 text-[#3b82f6]" />
-              <span className="tabular-nums">凍結保護 ×{freezeShields}</span>
-            </div>
           </div>
 
-          {/* 7-Day Minimalist Streak Strip */}
-          <div className="mt-5">
+          {/* 7-Day Check-in Grid */}
+          <div className="mt-4">
             <div className="grid grid-cols-7 gap-1.5">
               {weeklyData.map((d) => {
                 const isToday = d.day === '今日';
@@ -233,10 +238,10 @@ export function RankProgressTrack({
               })}
             </div>
 
-            {/* Dynamic Unlockable Streak Achievement Badges */}
+            {/* 3 / 7 / 14 / 30 Day Dynamic Achievement Badges */}
             <div className="mt-4 border-t border-[#1e2636] pt-3.5">
               <div className="flex items-center justify-between text-[11px] text-[#8b98b1]">
-                <span>連勝成就徽章</span>
+                <span>連續天數成就徽章</span>
                 <span className="font-mono text-[#cbd5e1] tabular-nums">
                   已解鎖 {STREAK_ACHIEVEMENTS.filter((b) => streakDays >= b.days).length} / {STREAK_ACHIEVEMENTS.length}
                 </span>
@@ -251,7 +256,7 @@ export function RankProgressTrack({
                       key={badge.id}
                       type="button"
                       onClick={() => setSelectedBadgeId(badge.id)}
-                      className={`flex min-h-[44px] flex-col items-center justify-center gap-1 rounded-lg border px-1.5 py-1.5 transition-all active:scale-95 ${
+                      className={`flex min-h-[44px] flex-col items-center justify-center gap-1 rounded-lg border px-1.5 py-1.5 transition-all duration-150 active:scale-95 ${
                         active
                           ? 'border-[#3b82f6] bg-[#171d2c]'
                           : unlocked

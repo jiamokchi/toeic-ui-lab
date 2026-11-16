@@ -1,7 +1,7 @@
-import { ArrowRight, CheckCircle2, Clock, Headphones, BookText, Sparkles, Zap } from 'lucide-react';
+import { ArrowRight, BookText, CheckCircle2, Clock, Headphones, Sparkles, Zap } from 'lucide-react';
 import { MissionTier, MissionTierId } from '../types/toeic';
 
-interface DailyMissionDeckProps {
+export interface DailyMissionDeckProps {
   tiers: MissionTier[];
   selectedTierId: MissionTierId;
   onSelectTier: (id: MissionTierId) => void;
@@ -28,17 +28,17 @@ export function DailyMissionDeck({
 
   return (
     <section
-      aria-label="每日任務選擇與進度"
+      aria-label="每日任務強度與課表"
       className="rounded-2xl border border-[#1e2636] bg-[#111622] p-5 sm:p-6"
     >
-      {/* Section Header */}
+      {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <p className="text-xs font-medium text-[#8b98b1]">
-            每日混合實戰 · 閱讀 / 聽力 / 高頻單字
+            每日混合課表 · 閱讀 / 聽力 / 單字 · 完賽全勤獎勵 +25 XP（每日限 1 次）
           </p>
           <h2 className="mt-1 font-display text-xl font-bold text-white">
-            選擇今日訓練強度
+            選擇今日任務強度
           </h2>
         </div>
 
@@ -46,7 +46,7 @@ export function DailyMissionDeck({
           {todayCompleted ? (
             <span className="flex items-center gap-1.5 font-medium text-[#10b981]">
               <CheckCircle2 className="h-4 w-4" />
-              今日任務已完成
+              今日課表全勤已領取 (+25 XP)
             </span>
           ) : (
             <span className="font-mono tabular-nums">
@@ -56,7 +56,7 @@ export function DailyMissionDeck({
         </div>
       </div>
 
-      {/* 3-Column Interactive Tier Cards */}
+      {/* 3-Column Intensity Cards */}
       <div className="mt-5 grid grid-cols-1 gap-3.5 md:grid-cols-3">
         {tiers.map((tier) => {
           const isSelected = tier.id === selectedTierId;
@@ -65,13 +65,13 @@ export function DailyMissionDeck({
               key={tier.id}
               type="button"
               onClick={() => onSelectTier(tier.id)}
-              className={`group relative flex min-h-[132px] flex-col justify-between rounded-xl border p-4 text-left transition-all duration-150 active:scale-[0.985] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3b82f6] ${
+              className={`group relative flex min-h-[132px] flex-col justify-between rounded-xl border p-4 text-left transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3b82f6] ${
                 isSelected
                   ? 'border-[#3b82f6] bg-[#161d2f] shadow-[0_0_0_1px_rgba(59,130,246,0.25)]'
                   : 'border-[#1e2636] bg-[#0e131d] hover:border-[#2d3952] hover:bg-[#131926]'
               }`}
             >
-              <div className="flex items-start justify-between gap-2 w-full">
+              <div className="flex w-full items-start justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <Clock
                     className={`h-4 w-4 ${
@@ -87,7 +87,7 @@ export function DailyMissionDeck({
                     isSelected ? 'text-[#f59e0b]' : 'text-[#8b98b1]'
                   }`}
                 >
-                  +{tier.baseXp} XP
+                  最高 +{tier.maxXp} XP
                 </span>
               </div>
 
@@ -95,10 +95,9 @@ export function DailyMissionDeck({
                 {tier.subtitle}
               </p>
 
-              {/* Unboxed Metadata Breakdown */}
               <div className="mt-4 flex items-center justify-between border-t border-[#1e2636]/80 pt-3 text-xs text-[#94a3b8]">
-                <span className="font-mono tabular-nums text-[#cbd5e1]">
-                  共 {tier.totalQuestions} 題
+                <span className="font-mono text-[#cbd5e1] tabular-nums">
+                  上限 {tier.totalQuestions} 題
                 </span>
                 <span className="truncate text-[11px] text-[#8b98b1]">
                   單字 {tier.breakdown.vocab} · 閱讀 {tier.breakdown.reading} · 聽力 {tier.breakdown.listening}
@@ -109,12 +108,12 @@ export function DailyMissionDeck({
         })}
       </div>
 
-      {/* Active Mission Action Bar — Ergonomic & High Feedback */}
+      {/* Action Bar */}
       <div className="mt-5 flex flex-col gap-4 border-t border-[#1e2636] pt-5 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex-1">
           <div className="flex items-center justify-between text-xs">
             <span className="font-medium text-[#cbd5e1]">
-              已選模式：{activeTier.title}（預計 {activeTier.durationMinutes} 分鐘）
+              已選模式：{activeTier.title}（上限 {activeTier.totalQuestions} 題 · 最高 +{activeTier.maxXp} XP）
             </span>
             <span className="font-mono text-[#60a5fa] tabular-nums">
               {todayCompleted ? '100%' : `${progressRatio}%`}
@@ -131,35 +130,35 @@ export function DailyMissionDeck({
           <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#8b98b1]">
             <span className="inline-flex items-center gap-1">
               <Zap className="h-3.5 w-3.5 text-[#f59e0b]" />
-              連續答對最高 2.0× Combo 加成
+              獨立答對 +5 · 提示 +2 · 努力 +1 XP
             </span>
             <span className="inline-flex items-center gap-1">
               <BookText className="h-3.5 w-3.5 text-[#60a5fa]" />
-              支援桌機 1–4 快捷鍵
+              1–4 選答 / Enter 下一題 / Space 播音
             </span>
             <span className="inline-flex items-center gap-1">
               <Headphones className="h-3.5 w-3.5 text-[#10b981]" />
-              內建語音朗讀
+              0.9x / 1.0x / 1.15x 語速
             </span>
           </div>
         </div>
 
-        <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center shrink-0">
+        <div className="flex shrink-0 flex-col gap-2.5 sm:flex-row sm:items-center">
           <button
             type="button"
             onClick={() => onTriggerCelebrationDemo(activeTier)}
-            className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-xl border border-[#263044] bg-[#171d2c] px-4 py-2.5 text-xs font-medium text-[#cbd5e1] transition-all duration-150 hover:border-[#f59e0b]/60 hover:text-white active:scale-[0.97] whitespace-nowrap"
+            className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-xl border border-[#263044] bg-[#171d2c] px-4 py-2.5 text-xs font-medium text-[#cbd5e1] transition-all duration-150 hover:border-[#f59e0b]/60 hover:text-white active:scale-[0.95] whitespace-nowrap"
           >
             <Sparkles className="h-3.5 w-3.5 text-[#f59e0b]" />
-            預覽任務完成慶祝動畫
+            預覽開箱慶祝動畫
           </button>
 
           <button
             type="button"
             onClick={() => onStartMission(activeTier)}
-            className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-[#3b82f6] px-6 py-3 text-sm font-semibold text-white transition-all duration-150 hover:bg-[#2563eb] active:scale-[0.97] whitespace-nowrap shadow-[0_8px_24px_-6px_rgba(59,130,246,0.45)]"
+            className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-[#3b82f6] px-6 py-3 text-sm font-semibold text-white shadow-[0_8px_24px_-6px_rgba(59,130,246,0.45)] transition-all duration-150 hover:bg-[#2563eb] active:scale-[0.95] whitespace-nowrap"
           >
-            <span>{todayCompleted ? '再練一組實戰題' : '開始實戰任務'}</span>
+            <span>{todayCompleted ? '進入自由練習 / 重刷' : '開始實戰課表'}</span>
             <ArrowRight className="h-4 w-4" />
           </button>
         </div>

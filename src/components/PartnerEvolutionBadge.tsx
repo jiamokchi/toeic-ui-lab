@@ -1,47 +1,27 @@
-import { AnimatePresence, motion } from 'motion/react';
 import { ChevronRight, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 
 export const OWL_COACH_IMAGE_URL = '/src/assets/images/ai_owl_coach_1794818548872.jpg';
 
-interface EvolutionStage {
+export interface EvolutionStage {
   id: string;
   level: number;
   name: string;
   species: string;
   minXp: number;
-  subtitle: string;
+  targetLabel: string;
 }
 
-const EVOLUTION_STAGES: EvolutionStage[] = [
-  {
-    id: 'shiba',
-    level: 1,
-    name: '菜鳥實習生',
-    species: '柴犬',
-    minXp: 0,
-    subtitle: '熟悉高頻商務字根與基礎語態',
-  },
-  {
-    id: 'fox',
-    level: 2,
-    name: '商務菁英',
-    species: '赤狐',
-    minXp: 1500,
-    subtitle: '掌握職場書信邏輯與文法捷徑',
-  },
-  {
-    id: 'owl',
-    level: 3,
-    name: '金色貓頭鷹導師',
-    species: '貓頭鷹',
-    minXp: 3000,
-    subtitle: '具備 800+ 全真閱讀與聽力洞悉力',
-  },
+export const EVOLUTION_STAGES: EvolutionStage[] = [
+  { id: 'shiba', level: 1, name: '菜鳥實習生', species: '柴犬', minXp: 0, targetLabel: '500' },
+  { id: 'fox', level: 2, name: '商務菁英', species: '赤狐', minXp: 2500, targetLabel: '650' },
+  { id: 'falcon', level: 3, name: '實戰蒼鷹', species: '蒼鷹', minXp: 8000, targetLabel: '750' },
+  { id: 'griffin', level: 4, name: '黃金領航員', species: '金獅鷲', minXp: 18000, targetLabel: '800' },
+  { id: 'owl', level: 5, name: '金色貓頭鷹導師', species: '貓頭鷹', minXp: 32000, targetLabel: '800+' },
 ];
 
 export function OwlCoachPortrait({
-  sizeClass = 'h-16 w-16',
+  sizeClass = 'h-14 w-14',
 }: {
   sizeClass?: string;
 }) {
@@ -75,15 +55,48 @@ export function OwlCoachPortrait({
   );
 }
 
-function StageAvatar({ stageId }: { stageId: string }) {
+export function StageAvatar({ stageId, size = 'md' }: { stageId: string; size?: 'sm' | 'md' }) {
+  const boxClass = size === 'sm' ? 'h-8 w-8' : 'h-11 w-11';
+  const svgClass = size === 'sm' ? 'h-6 w-6' : 'h-9 w-9';
+
   if (stageId === 'owl') {
-    return <OwlCoachPortrait sizeClass="h-11 w-11" />;
+    return <OwlCoachPortrait sizeClass={boxClass} />;
+  }
+
+  if (stageId === 'griffin') {
+    return (
+      <div className={`flex ${boxClass} shrink-0 items-center justify-center rounded-xl border border-[#f59e0b]/45 bg-[#0e131d]`}>
+        <svg viewBox="0 0 48 48" className={svgClass} aria-hidden="true">
+          <path d="M12 16 L17 7 L23 15 Z" fill="#fbbf24" />
+          <path d="M36 16 L31 7 L25 15 Z" fill="#fbbf24" />
+          <circle cx="24" cy="25" r="12" fill="#f59e0b" />
+          <circle cx="24" cy="27" r="8" fill="#fef3c7" />
+          <circle cx="20" cy="23" r="2" fill="#0f172a" />
+          <circle cx="28" cy="23" r="2" fill="#0f172a" />
+          <polygon points="24,25 21,30 27,30" fill="#d97706" />
+        </svg>
+      </div>
+    );
+  }
+
+  if (stageId === 'falcon') {
+    return (
+      <div className={`flex ${boxClass} shrink-0 items-center justify-center rounded-xl border border-[#10b981]/45 bg-[#0e131d]`}>
+        <svg viewBox="0 0 48 48" className={svgClass} aria-hidden="true">
+          <path d="M10 21 C10 13, 38 13, 38 21 L34 35 C30 39, 18 39, 14 35 Z" fill="#334155" />
+          <path d="M15 24 C15 19, 33 19, 33 24 L30 34 C26 37, 22 37, 18 34 Z" fill="#e2e8f0" />
+          <circle cx="20" cy="23" r="2" fill="#0f172a" />
+          <circle cx="28" cy="23" r="2" fill="#0f172a" />
+          <polygon points="24,25 21.5,30.5 26.5,30.5" fill="#f59e0b" />
+        </svg>
+      </div>
+    );
   }
 
   if (stageId === 'fox') {
     return (
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#3b82f6]/40 bg-[#0e131d]">
-        <svg viewBox="0 0 48 48" className="h-9 w-9" aria-hidden="true">
+      <div className={`flex ${boxClass} shrink-0 items-center justify-center rounded-xl border border-[#3b82f6]/45 bg-[#0e131d]`}>
+        <svg viewBox="0 0 48 48" className={svgClass} aria-hidden="true">
           <path d="M10 18 L14 6 L22 15 Z" fill="#ea580c" />
           <path d="M38 18 L34 6 L26 15 Z" fill="#ea580c" />
           <path d="M12 18 C12 12, 36 12, 36 18 C36 29, 28 36, 24 37 C20 36, 12 29, 12 18 Z" fill="#f97316" />
@@ -98,8 +111,8 @@ function StageAvatar({ stageId }: { stageId: string }) {
   }
 
   return (
-    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#263044] bg-[#0e131d]">
-      <svg viewBox="0 0 48 48" className="h-9 w-9" aria-hidden="true">
+    <div className={`flex ${boxClass} shrink-0 items-center justify-center rounded-xl border border-[#263044] bg-[#0e131d]`}>
+      <svg viewBox="0 0 48 48" className={svgClass} aria-hidden="true">
         <path d="M11 19 L10 8 L19 15 Z" fill="#d97724" />
         <path d="M37 19 L38 8 L29 15 Z" fill="#d97724" />
         <path d="M11 22 C11 13, 37 13, 37 22 C37 32, 30 37, 24 37 C18 37, 11 32, 11 22 Z" fill="#f5a64b" />
@@ -112,7 +125,7 @@ function StageAvatar({ stageId }: { stageId: string }) {
   );
 }
 
-interface PartnerEvolutionBadgeProps {
+export interface PartnerEvolutionBadgeProps {
   currentXp: number;
   compact?: boolean;
 }
@@ -152,7 +165,7 @@ export function PartnerEvolutionBadge({
               Lv.{currentStage.level} {currentStage.name}（{currentStage.species}）
             </span>
             <ChevronRight
-              className={`h-3.5 w-3.5 shrink-0 text-[#64748b] transition-transform ${
+              className={`h-3.5 w-3.5 shrink-0 text-[#64748b] transition-transform duration-150 ${
                 expanded ? 'rotate-90 text-[#60a5fa]' : ''
               }`}
             />
@@ -167,66 +180,56 @@ export function PartnerEvolutionBadge({
             </div>
             <span className="shrink-0 font-mono text-[10px] text-[#60a5fa] tabular-nums">
               {nextStage
-                ? `差 ${xpRemaining} XP 進化`
-                : '已達最終形態'}
+                ? `差 ${xpRemaining.toLocaleString()} XP`
+                : '最終形態'}
             </span>
           </div>
         </div>
       </button>
 
-      {/* Expandable Evolution Path Preview */}
-      <AnimatePresence>
-        {expanded && (
-          <motion.div
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.16 }}
-            className="mt-2 rounded-xl border border-[#263044] bg-[#0b0e14] p-3 text-xs"
-          >
-            <div className="flex items-center justify-between text-[11px] text-[#8b98b1]">
-              <span className="inline-flex items-center gap-1 font-medium text-[#fbbf24]">
-                <Sparkles className="h-3 w-3" />
-                夥伴進化路線
-              </span>
-              <span className="font-mono tabular-nums">{currentXp.toLocaleString()} XP</span>
-            </div>
-            <div className="mt-2.5 grid grid-cols-3 gap-2">
-              {EVOLUTION_STAGES.map((stage, idx) => {
-                const unlocked = currentXp >= stage.minXp;
-                const isCurrent = idx === stageIndex;
-                return (
-                  <div
-                    key={stage.id}
-                    className={`flex flex-col items-center rounded-lg border p-2 text-center ${
-                      isCurrent
-                        ? 'border-[#3b82f6]/60 bg-[#151c2c]'
-                        : unlocked
-                          ? 'border-[#1e2636] bg-[#111622]'
-                          : 'border-[#1e2636] bg-[#0e131d] opacity-55'
-                    }`}
-                  >
-                    <StageAvatar stageId={stage.id} />
-                    <span className="mt-1.5 text-[11px] font-semibold text-white">
-                      {stage.name}
-                    </span>
-                    <span className="font-mono text-[10px] text-[#8b98b1] tabular-nums">
-                      {stage.minXp} XP
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {expanded && (
+        <div className="animate-modal-pop mt-2 rounded-xl border border-[#263044] bg-[#0b0e14] p-3 text-xs">
+          <div className="flex items-center justify-between text-[11px] text-[#8b98b1]">
+            <span className="inline-flex items-center gap-1 font-medium text-[#fbbf24]">
+              <Sparkles className="h-3 w-3" />
+              5 階段夥伴進化路線（全年 32,000 XP）
+            </span>
+            <span className="font-mono tabular-nums">{currentXp.toLocaleString()} XP</span>
+          </div>
+          <div className="mt-2.5 grid grid-cols-5 gap-1.5">
+            {EVOLUTION_STAGES.map((stage, idx) => {
+              const unlocked = currentXp >= stage.minXp;
+              const isCurrent = idx === stageIndex;
+              return (
+                <div
+                  key={stage.id}
+                  className={`flex flex-col items-center rounded-lg border p-1.5 text-center ${
+                    isCurrent
+                      ? 'border-[#3b82f6]/70 bg-[#151c2c]'
+                      : unlocked
+                        ? 'border-[#1e2636] bg-[#111622]'
+                        : 'border-[#1e2636] bg-[#0e131d] opacity-55'
+                  }`}
+                >
+                  <StageAvatar stageId={stage.id} size="sm" />
+                  <span className="mt-1 truncate w-full text-[10px] font-semibold text-white">
+                    {stage.species}
+                  </span>
+                  <span className="font-mono text-[9px] text-[#8b98b1] tabular-nums">
+                    {stage.minXp.toLocaleString()}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 export function WeaknessIllustration({ id }: { id: string }) {
   if (id === 'w-1') {
-    // Grammar Structure: Syntax Bracket & Highlighted Clause Nodes
     return (
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#222c40] bg-[#0e131d]">
         <svg viewBox="0 0 48 48" className="h-9 w-9" aria-hidden="true">
@@ -243,7 +246,6 @@ export function WeaknessIllustration({ id }: { id: string }) {
   }
 
   if (id === 'w-2') {
-    // Business Reading: Document + Magnifying Glass Scan
     return (
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#222c40] bg-[#0e131d]">
         <svg viewBox="0 0 48 48" className="h-9 w-9" aria-hidden="true">
@@ -258,7 +260,6 @@ export function WeaknessIllustration({ id }: { id: string }) {
     );
   }
 
-  // Listening: Tech Headphones & Soundwave
   return (
     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#222c40] bg-[#0e131d]">
       <svg viewBox="0 0 48 48" className="h-9 w-9" aria-hidden="true">

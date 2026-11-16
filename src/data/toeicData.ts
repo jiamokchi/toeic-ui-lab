@@ -2,43 +2,59 @@ import {
   DailyProgressDay,
   MissionTier,
   RankTier,
+  ReviewQueueItem,
   ToeicQuestion,
   VocabCard,
   WeaknessItem,
 } from '../types/toeic';
 
+export const MAX_CAREER_XP = 32000;
+
 export const RANK_TIERS: RankTier[] = [
   {
-    id: 'tier-500',
-    targetScore: 500,
+    id: 'lv-1',
+    level: 1,
+    targetLabel: '500',
     title: '基礎築底期',
     subtitle: '掌握核心文法結構與高頻商務字根',
     minXp: 0,
-    perk: '解鎖每日 5 分鐘快充模式',
+    perk: '建立每日實戰節奏與基礎字庫',
   },
   {
-    id: 'tier-650',
-    targetScore: 650,
+    id: 'lv-2',
+    level: 2,
+    targetLabel: '650',
     title: '職場溝通者',
     subtitle: '具備書信理解與 Part 5 語法直覺',
-    minXp: 1500,
-    perk: '解鎖聽音拼字特訓與 AI 錯題標籤',
+    minXp: 2500,
+    perk: '解鎖「商務赤狐」夥伴型態與進階診斷',
   },
   {
-    id: 'tier-750',
-    targetScore: 750,
+    id: 'lv-3',
+    level: 3,
+    targetLabel: '750',
     title: '精準實戰家',
     subtitle: 'Part 7 多篇閱讀掃描與同義替換加速',
-    minXp: 3000,
-    perk: '解鎖高階 800 分限時壓力模擬',
+    minXp: 8000,
+    perk: '解鎖「實戰蒼鷹」夥伴型態與壓力模擬',
   },
   {
-    id: 'tier-800',
-    targetScore: 800,
+    id: 'lv-4',
+    level: 4,
+    targetLabel: '800',
     title: '金色證書候選',
-    subtitle: '達成 TOEIC 800+ 商業英語流利基準',
-    minXp: 5000,
-    perk: '解鎖全真 860 衝刺模式與總複習徽章',
+    subtitle: '穩定駕馭長篇閱讀與英澳連音聽力',
+    minXp: 18000,
+    perk: '解鎖「黃金領航員」夥伴型態與全真檢定',
+  },
+  {
+    id: 'lv-5',
+    level: 5,
+    targetLabel: '800+',
+    title: '金色貓頭鷹導師',
+    subtitle: '達成全年 365 天 32,000 XP 頂尖殿堂',
+    minXp: 32000,
+    perk: '解鎖最終形態「3D 金色貓頭鷹導師」徽章',
   },
 ];
 
@@ -47,40 +63,40 @@ export const MISSION_TIERS: MissionTier[] = [
     id: '5m',
     durationMinutes: 5,
     title: '5 分鐘快充任務',
-    subtitle: '通勤片段時間維持語感與連勝不斷線',
+    subtitle: '通勤片段時間維持台北時區連勝不斷線',
     totalQuestions: 6,
     breakdown: { vocab: 3, reading: 2, listening: 1 },
-    baseXp: 60,
+    maxXp: 55,
   },
   {
     id: '15m',
     durationMinutes: 15,
-    title: '15 分鐘標準訓練',
-    subtitle: '黃金比例搭配，穩定推進 800 分進度條',
+    title: '15 分鐘標準課表',
+    subtitle: '黃金比例搭配，穩定累積全勤與精熟獎勵',
     totalQuestions: 12,
     breakdown: { vocab: 4, reading: 5, listening: 3 },
-    baseXp: 150,
+    maxXp: 85,
     recommended: true,
   },
   {
     id: '30m',
     durationMinutes: 30,
     title: '30 分鐘深度衝刺',
-    subtitle: '高強度長篇閱讀與聽力專注耐力練習',
+    subtitle: '高強度長篇閱讀與聽力專注耐力訓練',
     totalQuestions: 20,
     breakdown: { vocab: 6, reading: 8, listening: 6 },
-    baseXp: 280,
+    maxXp: 125,
   },
 ];
 
 export const INITIAL_WEEKLY_DATA: DailyProgressDay[] = [
-  { day: '週一', date: '11/10', xp: 150, accuracy: 75, minutes: 14, completed: true },
-  { day: '週二', date: '11/11', xp: 185, accuracy: 83, minutes: 16, completed: true },
-  { day: '週三', date: '11/12', xp: 72, accuracy: 67, minutes: 6, completed: true },
-  { day: '週四', date: '11/13', xp: 210, accuracy: 88, minutes: 18, completed: true },
-  { day: '週五', date: '11/14', xp: 165, accuracy: 79, minutes: 15, completed: true },
-  { day: '週六', date: '11/15', xp: 310, accuracy: 85, minutes: 29, completed: true },
-  { day: '今日', date: '11/16', xp: 0, accuracy: 0, minutes: 0, completed: false },
+  { day: '週一', date: '11/10', xp: 85, accuracy: 75, answered: 12, minutes: 14, completed: true },
+  { day: '週二', date: '11/11', xp: 95, accuracy: 83, answered: 14, minutes: 16, completed: true },
+  { day: '週三', date: '11/12', xp: 55, accuracy: 67, answered: 6, minutes: 6, completed: true },
+  { day: '週四', date: '11/13', xp: 105, accuracy: 88, answered: 16, minutes: 18, completed: true },
+  { day: '週五', date: '11/14', xp: 82, accuracy: 79, answered: 12, minutes: 15, completed: true },
+  { day: '週六', date: '11/15', xp: 125, accuracy: 85, answered: 20, minutes: 29, completed: true },
+  { day: '今日', date: '11/16', xp: 0, accuracy: 0, answered: 0, minutes: 0, completed: false },
 ];
 
 export const SKILL_RADAR_BARS = [
@@ -99,7 +115,8 @@ export const WEAKNESS_ITEMS: WeaknessItem[] = [
     accuracy: 58,
     avgSeconds: 26,
     targetSeconds: 15,
-    insight: '面對主動 (V-ing) 與被動 (V-ed) 分詞作後位修飾時容易混淆主詞關係，導致單題作答時間超過 25 秒。',
+    insight:
+      '面對主動 (V-ing) 與被動 (V-ed) 分詞作後位修飾時容易混淆主詞關係，導致單題作答時間超過 25 秒。',
     recommendedAction: '針對分詞結構練 5 題',
     categoryFilter: 'reading',
   },
@@ -110,7 +127,8 @@ export const WEAKNESS_ITEMS: WeaknessItem[] = [
     accuracy: 64,
     avgSeconds: 78,
     targetSeconds: 55,
-    insight: '合約條款與退款政策題型常出現 paraphrase（如 reimburse ↔ refund），建議先掃描關鍵動詞再回原文定位。',
+    insight:
+      '合約條款與退款政策題型常出現 paraphrase（如 reimburse ↔ refund），建議先掃描關鍵動詞再回原文定位。',
     recommendedAction: '強化閱讀同義替換',
     categoryFilter: 'reading',
   },
@@ -121,9 +139,40 @@ export const WEAKNESS_ITEMS: WeaknessItem[] = [
     accuracy: 69,
     avgSeconds: 18,
     targetSeconds: 12,
-    insight: '聽到 "However" 或 "Actually" 後的語氣轉折時，容易被前句干擾選項誤導。',
+    insight:
+      '聽到 "However" 或 "Actually" 後的語氣轉折時，容易被前句干擾選項誤導。',
     recommendedAction: '開啟聽音辨識特訓',
     categoryFilter: 'listening',
+  },
+];
+
+export const INITIAL_REVIEW_QUEUE: ReviewQueueItem[] = [
+  {
+    id: 'rq-1',
+    questionId: 'q-1',
+    partLabel: 'Part 5 文法填空',
+    weaknessTag: '分詞片語後位修飾',
+    promptPreview: 'All budget proposals _______ by the regional directors must be submitted...',
+    dueLabel: '今日到期',
+    wrongCount: 2,
+  },
+  {
+    id: 'rq-2',
+    questionId: 'q-9',
+    partLabel: 'Part 5 時態與假設語氣',
+    weaknessTag: '與過去相反假設倒裝',
+    promptPreview: 'Had the logistics partner notified us earlier, we _______ alternative...',
+    dueLabel: '今日到期',
+    wrongCount: 1,
+  },
+  {
+    id: 'rq-3',
+    questionId: 'q-8',
+    partLabel: 'Part 3 短對話理解',
+    weaknessTag: '轉折詞與因果聽力捕捉',
+    promptPreview: 'Actually, we moved it to Wednesday afternoon so the legal team...',
+    dueLabel: '2 小時後到期',
+    wrongCount: 1,
   },
 ];
 
@@ -133,9 +182,10 @@ export const QUESTION_BANK: ToeicQuestion[] = [
     category: 'reading',
     format: 'cloze',
     partLabel: 'Part 5 文法填空',
-    difficulty: 700,
+    difficulty: 750,
     prompt:
       'All budget proposals _______ by the regional directors must be submitted to the finance committee before Friday.',
+    hint: '這句的主動詞是後面的 must be submitted，空格修飾 proposals（提案「被」審核）。',
     options: ['reviewing', 'reviewed', 'to review', 'reviews'],
     correctIndex: 1,
     explanation:
@@ -150,6 +200,7 @@ export const QUESTION_BANK: ToeicQuestion[] = [
     difficulty: 800,
     prompt:
       'Because of unexpected supply chain delays, the manufacturer had to _______ the launch of its flagship tablet until next quarter.',
+    hint: '前面提到供應鏈延誤（delays），因此上市時間必須「順延」到下一季。',
     options: ['expedite', 'postpone', 'reimburse', 'scrutinize'],
     correctIndex: 1,
     explanation:
@@ -161,10 +212,11 @@ export const QUESTION_BANK: ToeicQuestion[] = [
     category: 'listening',
     format: 'listening-choice',
     partLabel: 'Part 2 聽力應答',
-    difficulty: 700,
+    difficulty: 650,
     audioScript:
       'Has the quarterly marketing report been distributed to the board members yet?',
-    prompt: '請點擊播放語音，並選出最自然合邏輯的商業應答：',
+    hint: '問句詢問報告「是否已經分發」了（yet），請找直接回應進度狀態的選項。',
+    prompt: '請播放語音，並選出最自然合邏輯的商業應答：',
     options: [
       'No, Sarah is still proofreading the final draft.',
       'Yes, the marketing budget was approved last month.',
@@ -173,7 +225,7 @@ export const QUESTION_BANK: ToeicQuestion[] = [
     ],
     correctIndex: 0,
     explanation:
-      '問句詢問「季度行銷報告是否已經分發給董事會成員？」，選項 (A) 回答「還沒，Sarah 還在校對最終草稿」直接回應進度；其餘選項屬於常見關鍵字干擾（marketing / board members）。',
+      '問句詢問「季度行銷報告是否已經分發給董事會成員？」，選項 (1) 回答「還沒，Sarah 還在校對最終草稿」直接回應進度；其餘選項屬於常見關鍵字干擾（marketing / board members）。',
     weaknessTag: 'Part 2 完成式問句應答',
   },
   {
@@ -186,6 +238,7 @@ export const QUESTION_BANK: ToeicQuestion[] = [
     passage:
       'Effective November 24, Horizon Logistics will transition to an encrypted mobile-badge security system at all warehouse entrances. Employees must download the HorizonPass app and verify their corporate credentials by November 20. Physical keycards will remain active only during a 5-day grace period ending November 29, after which entry will require mobile authentication.',
     prompt: 'When will physical keycards stop working at the warehouse entrances?',
+    hint: '注意文章最後一句的 "5-day grace period ending November 29"。',
     options: [
       'On November 20',
       'On November 24',
@@ -202,15 +255,11 @@ export const QUESTION_BANK: ToeicQuestion[] = [
     category: 'vocab',
     format: 'listening-choice',
     partLabel: '聽音選字義',
-    difficulty: 700,
+    difficulty: 650,
     audioScript: 'Compliance with safety regulations is mandatory for every contractor.',
+    hint: '名詞源自動詞 comply with（遵守規定）。',
     prompt: '請聆聽例句中的核心字彙 "compliance"，選出最準確的中文語意：',
-    options: [
-      '競爭優勢',
-      '遵守、合規',
-      '臨時抱怨',
-      '設備維修',
-    ],
+    options: ['競爭優勢', '遵守、合規', '臨時抱怨', '設備維修'],
     correctIndex: 1,
     explanation:
       'compliance (n.) 源自 comply (with)，在 TOEIC 職場與法務文章中極高頻出現，意指「遵守、遵循規定（合規）」。',
@@ -224,6 +273,7 @@ export const QUESTION_BANK: ToeicQuestion[] = [
     difficulty: 800,
     prompt:
       '_______ the rising cost of raw materials, the company managed to maintain its profit margin through automated packaging.',
+    hint: '空格後方只有名詞片語 "the rising cost of raw materials"，沒有動詞，需要選「介系詞」。',
     options: ['Although', 'Despite', 'Even though', 'Whereas'],
     correctIndex: 1,
     explanation:
@@ -238,6 +288,7 @@ export const QUESTION_BANK: ToeicQuestion[] = [
     difficulty: 800,
     prompt:
       'Ms. Tanaka was praised for her _______ attention to detail while auditing the three-year financial ledger.',
+    hint: '審計三年財務帳簿時受到稱讚，代表對細節「極為細心、一絲不苟」。',
     options: ['meticulous', 'tentative', 'obsolete', 'redundant'],
     correctIndex: 0,
     explanation:
@@ -252,6 +303,7 @@ export const QUESTION_BANK: ToeicQuestion[] = [
     difficulty: 800,
     audioScript:
       'I thought the client workshop was scheduled for Tuesday morning. Actually, we moved it to Wednesday afternoon so the legal team could finalize the contract first.',
+    hint: '留意轉折詞 "Actually" 後面提到的 "so the legal team..."。',
     prompt: '根據對話內容，為何客戶工作坊被改期至週三下午？',
     options: [
       '週二上午會議室已滿',
@@ -272,12 +324,8 @@ export const QUESTION_BANK: ToeicQuestion[] = [
     difficulty: 800,
     prompt:
       'Had the logistics partner notified us earlier, we _______ alternative shipping arrangements.',
-    options: [
-      'would make',
-      'will have made',
-      'would have made',
-      'have made',
-    ],
+    hint: '句首 Had + S + p.p. 是省略 If 的與過去事實相反倒裝，主要子句需要 would + have + p.p.。',
+    options: ['would make', 'will have made', 'would have made', 'have made'],
     correctIndex: 2,
     explanation:
       '此題為與過去事實相反的假設語氣倒裝句（省略 If，將 Had 提前：If the partner had notified...），主要子句必須使用 would have + p.p.，故選 would have made。',
@@ -288,9 +336,10 @@ export const QUESTION_BANK: ToeicQuestion[] = [
     category: 'vocab',
     format: 'cloze',
     partLabel: '單字克漏字',
-    difficulty: 700,
+    difficulty: 750,
     prompt:
       'Customers who return unopened electronics within 30 days are eligible for a full _______.',
+    hint: '退回未開封電子產品可以獲得全額「退款」。',
     options: ['reimbursement', 'itinerary', 'incentive', 'merchandise'],
     correctIndex: 0,
     explanation:
@@ -302,8 +351,9 @@ export const QUESTION_BANK: ToeicQuestion[] = [
     category: 'listening',
     format: 'listening-choice',
     partLabel: 'Part 2 聽力應答',
-    difficulty: 700,
+    difficulty: 650,
     audioScript: 'Would you prefer to review the slide deck now or after lunch?',
+    hint: 'A or B 的選擇問句不能用 Yes / No 回答。',
     prompt: '請播放語音，選出最恰當的回應：',
     options: [
       'Yes, I ordered a sandwich.',
@@ -313,7 +363,7 @@ export const QUESTION_BANK: ToeicQuestion[] = [
     ],
     correctIndex: 1,
     explanation:
-      '選擇問句（A or B）不可用 Yes/No 回答，應直接選擇其中一項或提出替代方案，故選 (B)。',
+      '選擇問句（A or B）不可用 Yes/No 回答，應直接選擇其中一項或提出替代方案，故選 (2)。',
     weaknessTag: '選擇問句聽力反應',
   },
   {
@@ -326,6 +376,7 @@ export const QUESTION_BANK: ToeicQuestion[] = [
     passage:
       'Thank you for sending the updated lease terms. While our team appreciates the 10% discount on toner cartridges, we noticed that the monthly maintenance fee increased by 15%. Before signing the three-year extension, could we schedule a brief call to discuss capping the service fee at last year’s rate?',
     prompt: 'What is Ms. Patel asking the vendor to do?',
+    hint: '注意動詞 "capping the service fee"（將服務費設定上限）。',
     options: [
       'Cancel the printer lease immediately',
       'Send additional toner cartridges for free',
@@ -334,7 +385,7 @@ export const QUESTION_BANK: ToeicQuestion[] = [
     ],
     correctIndex: 2,
     explanation:
-      '最後一句 "discuss capping the service fee at last year’s rate" 中，cap 意為「設定上限」，與選項 (C) limiting the increase 同義替換。',
+      '最後一句 "discuss capping the service fee at last year’s rate" 中，cap 意為「設定上限」，與選項 (3) limiting the increase 同義替換。',
     weaknessTag: '商務議價同義替換',
   },
 ];
@@ -347,9 +398,12 @@ export const VOCAB_DECK: VocabCard[] = [
     partOfSpeech: 'v.',
     meaning: '償還；報銷（費用）',
     exampleEn: 'The company will reimburse all approved travel expenses within two weeks.',
+    exampleCloze: 'The company will _______ all approved travel expenses within two weeks.',
     exampleZh: '公司將於兩週內報銷所有經核准的差旅費用。',
     level: 650,
     mastered: false,
+    zhDistractors: ['加速辦理；促進', '延期；推遲', '強迫；強制執行'],
+    enDistractors: ['expedite', 'postpone', 'mandate'],
   },
   {
     id: 'v-2',
@@ -358,9 +412,12 @@ export const VOCAB_DECK: VocabCard[] = [
     partOfSpeech: 'adj.',
     meaning: '一絲不苟的；極為細心的',
     exampleEn: 'Her meticulous proofreading prevented several costly printing errors.',
+    exampleCloze: 'Her _______ proofreading prevented several costly printing errors.',
     exampleZh: '她一絲不苟的校對避免了幾項代價高昂的印刷錯誤。',
     level: 800,
     mastered: false,
+    zhDistractors: ['暫定的；試驗性的', '過時的；淘汰的', '多餘的；重複的'],
+    enDistractors: ['tentative', 'obsolete', 'redundant'],
   },
   {
     id: 'v-3',
@@ -369,9 +426,12 @@ export const VOCAB_DECK: VocabCard[] = [
     partOfSpeech: 'v.',
     meaning: '加速辦理；促進',
     exampleEn: 'We paid an extra fee to expedite customs clearance for the prototype.',
+    exampleCloze: 'We paid an extra fee to _______ customs clearance for the prototype.',
     exampleZh: '我們支付了額外費用以加速原型機的清關流程。',
     level: 800,
     mastered: true,
+    zhDistractors: ['延後；取消', '仔細審查；檢驗', '報銷；償還'],
+    enDistractors: ['postpone', 'scrutinize', 'reimburse'],
   },
   {
     id: 'v-4',
@@ -380,9 +440,12 @@ export const VOCAB_DECK: VocabCard[] = [
     partOfSpeech: 'n.',
     meaning: '突發事件；應變計畫',
     exampleEn: 'Every project manager must submit a contingency plan before launch.',
+    exampleCloze: 'Every project manager must submit a _______ plan before launch.',
     exampleZh: '每位專案經理在產品上線前都必須提交一份應變計畫。',
     level: 800,
     mastered: false,
+    zhDistractors: ['帳目差異；不符', '行程表；路線', '折舊；貶值'],
+    enDistractors: ['discrepancy', 'itinerary', 'depreciation'],
   },
   {
     id: 'v-5',
@@ -391,9 +454,12 @@ export const VOCAB_DECK: VocabCard[] = [
     partOfSpeech: 'adj.',
     meaning: '強制的；義務性的',
     exampleEn: 'Attendance at tomorrow’s cybersecurity briefing is mandatory.',
+    exampleCloze: 'Attendance at tomorrow’s cybersecurity briefing is _______.',
     exampleZh: '明日的資訊安全簡報為強制參加。',
     level: 650,
     mastered: true,
+    zhDistractors: ['可選擇的；非強制的', '機密的；私密的', '臨近的；即將發生的'],
+    enDistractors: ['optional', 'confidential', 'imminent'],
   },
   {
     id: 'v-6',
@@ -402,8 +468,11 @@ export const VOCAB_DECK: VocabCard[] = [
     partOfSpeech: 'n.',
     meaning: '差異；帳目不符',
     exampleEn: 'Accounting noticed a minor discrepancy between the invoice and the receipt.',
+    exampleCloze: 'Accounting noticed a minor _______ between the invoice and the receipt.',
     exampleZh: '會計部門注意到發票與收據之間有些許金額不符。',
     level: 750,
     mastered: false,
+    zhDistractors: ['應變方案；突發事件', '激勵措施；獎金', '補助；津貼'],
+    enDistractors: ['contingency', 'incentive', 'subsidy'],
   },
 ];
